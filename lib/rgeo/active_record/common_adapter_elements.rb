@@ -6,7 +6,7 @@ module RGeo
     # Some default column constructors specifications for most spatial
     # databases. Individual adapters may add to or override this list.
     DEFAULT_SPATIAL_COLUMN_CONSTRUCTORS = {
-      :spatial => {:type => 'geometry'}.freeze,
+      :spatial => { type: 'geometry' }.freeze,
       :geometry => {}.freeze,
       :point => {}.freeze,
       :line_string => {}.freeze,
@@ -109,12 +109,12 @@ module RGeo
             statement_parts_ = [
               ('add_index ' + index_.table.inspect),
               index_.columns.inspect,
-              (':name => ' + index_.name.inspect),
+              ('name: ' + index_.name.inspect),
             ]
-            statement_parts_ << ':unique => true' if index_.unique
-            statement_parts_ << ':spatial => true' if index_.respond_to?(:spatial) && index_.spatial
+            statement_parts_ << 'unique: true' if index_.unique
+            statement_parts_ << 'spatial: true' if index_.respond_to?(:spatial) && index_.spatial
             index_lengths_ = (index_.lengths || []).compact
-            statement_parts_ << (':length => ' + ::Hash[*index_.columns.zip(index_.lengths).flatten].inspect) unless index_lengths_.empty?
+            statement_parts_ << ('length: ' + ::Hash[*index_.columns.zip(index_.lengths).flatten].inspect) unless index_lengths_.empty?
             '  ' + statement_parts_.join(', ')
           end
           stream_.puts add_index_statements_.sort.join("\n")
