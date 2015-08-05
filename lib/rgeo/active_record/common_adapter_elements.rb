@@ -115,6 +115,17 @@ module RGeo
             statement_parts_ << 'spatial: true' if index_.respond_to?(:spatial) && index_.spatial
             index_lengths_ = (index_.lengths || []).compact
             statement_parts_ << ('length: ' + ::Hash[*index_.columns.zip(index_.lengths).flatten].inspect) unless index_lengths_.empty?
+
+            # ActiveRecord 4.0 and 4.1 supports the following as well:
+            index_orders = (index_.orders || {})
+            statement_parts_ << ('order: ' + index_.orders.inspect) unless index_orders.empty?
+
+            statement_parts_ << ('where: ' + index_.where.inspect) if index_.where
+
+            statement_parts_ << ('using: ' + index_.using.inspect) if index_.using
+
+            statement_parts_ << ('type: ' + index_.type.inspect) if index_.type
+
             '  ' + statement_parts_.join(', ')
           end
           stream_.puts add_index_statements_.sort.join("\n")
